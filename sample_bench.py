@@ -1,7 +1,8 @@
 import pyperf
 from os import listdir
 from os.path import isfile, join, basename
-from macpacking.algorithms.online import NextFit
+from macpacking.algorithms.nextfit_online import NextFit
+from macpacking.algorithms.bestfit import BestFit
 from macpacking.reader import BinppReader
 
 
@@ -15,7 +16,7 @@ CASES = './_datasets/binpp/N4C2W2'
 def main():
     '''Example of benchmark code'''
     cases = list_case_files(CASES)
-    run_bench(cases)
+    run_bench_time(cases)
 
 
 def list_case_files(dir: str) -> list[str]:
@@ -28,6 +29,14 @@ def run_bench(cases: list[str]):
         name = basename(case)
         data = BinppReader(case).online()
         binpacker = NextFit()
+        runner.bench_func(name, binpacker, data)
+
+def run_bench_time(cases: list[str]):
+    runner = pyperf.Runner()
+    for case in cases:
+        name = basename(case)
+        data = BinppReader(case).online()
+        binpacker = BestFit()
         runner.bench_func(name, binpacker, data)
 
 

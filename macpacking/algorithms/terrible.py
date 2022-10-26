@@ -8,6 +8,6 @@ class Terrible(Online):
         bin_index = 0
         solution = []
         for w in stream:
-            bin_index += 1
             solution.append([w])
+            bin_index += 1
         return solution

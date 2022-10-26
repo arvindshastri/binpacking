@@ -1,6 +1,6 @@
 from .. import Solution, WeightSet
 from ..model import Offline
-from .online import NextFit as Nf_online
+from .nextfit_online import NextFit as Nf_online
 
 
 class NextFit(Offline):
