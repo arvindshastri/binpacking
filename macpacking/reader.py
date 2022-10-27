@@ -57,15 +57,14 @@ class JburkardtReader(DatasetReader):
         self.__filenameS = filename2
         self.__filenameW = filename3
 
-        
     def _load_data_from_disk(self) -> WeightSet:
         with open(self.__filenameC, 'r') as readerC:
             capacity: int = int(readerC.readline())
         with open(self.__filenameS, 'r') as readerS:
-            numberOfObjects = [int(l) for l in (line.strip() for line in readerS) if l]
+            numberOfObjects = \
+                [int(l) for l in (line.strip() for line in readerS) if l]
             nb_objects: int = int(len(numberOfObjects))
         with open(self.__filenameW, 'r') as readerW:
             weights = [int(l) for l in (line.strip() for line in readerW) if l]
-        
-        return (capacity, weights)
-            
+
+        return (capacity, weights)     

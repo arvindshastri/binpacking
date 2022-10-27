@@ -14,10 +14,10 @@ class FirstFit(Online):
             while (bin_index < len(solution)):
                 if (capacity - sum(solution[bin_index]) >= w):
                     solution[bin_index].append(w)
-                    break 
+                    break
                 bin_index += 1
-        
+
             if bin_index == len(solution):
                 solution.append([w])
-            
+
         return solution
