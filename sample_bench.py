@@ -8,24 +8,34 @@ from macpacking.model import Online
 from macpacking.algorithms.online import \
     FirstFit, BestFit, WorstFit
 from macpacking.algorithms.offline import \
-    FirstFitDecreasing, BestFitDecreasing, WorstFitDecreasing
+    FirstFitDecreasing, BestFitDecreasing, WorstFitDecreasing, BenMaier
 
 
 CASES = './_datasets/binpp/N1C1W1'
+
+'''Credit: https://stackoverflow.com/questions/1796180/how-can-i-get-a-list-of-all-classes-within-current-module-in-python'''  # noqa: E501
 onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpacking.algorithms.online'], inspect.isclass) if obj.__module__ == 'macpacking.algorithms.online']  # noqa: E501
 
 
 def main():
     cases = list_case_files(CASES)
 
-    algorithms = [FirstFit(), BestFit(), WorstFit(), FirstFitDecreasing(), BestFitDecreasing(), WorstFitDecreasing()]  # noqa: E501
+    algorithms = [BenMaier(), FirstFit(), BestFit(), WorstFit(), FirstFitDecreasing(), BestFitDecreasing(), WorstFitDecreasing()]  # noqa: E501
+    
+    print("Analysis of Average Bin Usage as Percentage")
+    print("─" * 25)
     analyzePercentage(cases, BinppReader, algorithms)
+
+    print("Analysis of Average Remaining Space")
+    print("─" * 25)
     spaceBench(cases, BinppReader, algorithms)
+
+    print("Analysis of Average Bins")
+    print("─" * 25)
     numberBins(cases, BinppReader, algorithms)
 
 
 # HELPER FUNCTIONS
-
 def list_case_files(dir: str) -> list[str]:
     return sorted([f'{dir}/{f}' for f in listdir(dir) if isfile(join(dir, f))])
 
@@ -33,6 +43,9 @@ def list_case_files(dir: str) -> list[str]:
 def average(list, decimal):
     return round((sum(list) / len(list)), decimal)
 
+
+def className(algorithm):
+    return type(algorithm).__name__
 
 def printOutput(list):
     print(*list.keys(), sep="\t")
@@ -43,7 +56,8 @@ def printOutput(list):
 def analyzeOutput(dict):
     for key in dict:
         avg = average(dict[key], 4)
-        print(f"{key}: {avg}")
+        line = '{:<20} {:<10}'.format(key+":", avg)
+        print(line)
     print("\n")
 
 
@@ -104,18 +118,17 @@ def analyzePercentage(cases: list[str], reader: DatasetReader, algorithms: list)
             avg = average(binUsage, 4)
             averageUsage.append(avg)
 
-        resultList[type(algorithm).__name__] = averageUsage
+        resultList[className(algorithm)] = averageUsage
 
-    print("Analysis of Average Bin Usage as Percentage")
     analyzeOutput(resultList)
+
+    return resultList
 
 
 # ANALYZE REMAINING SPACE
 def spaceBench(cases: list[str], reader: DatasetReader, algorithms: list):
 
     resultList = {}
-
-    '''Credit: https://stackoverflow.com/questions/1796180/how-can-i-get-a-list-of-all-classes-within-current-module-in-python'''  # noqa: E501
 
     for algorithm in algorithms:
         averageRemainingSpace = []
@@ -136,10 +149,11 @@ def spaceBench(cases: list[str], reader: DatasetReader, algorithms: list):
             avg = average(remainingSpace, 2)
             averageRemainingSpace.append(avg)
 
-        resultList[type(algorithm).__name__] = averageRemainingSpace
+        resultList[className(algorithm)] = averageRemainingSpace
 
-    print("Analysis of Average Remaining Space")
     analyzeOutput(resultList)
+
+    return resultList
 
 
 def numberBins(cases: list[str], reader: DatasetReader, algorithms: list):
@@ -157,10 +171,11 @@ def numberBins(cases: list[str], reader: DatasetReader, algorithms: list):
         for solution in solutionList:
             averageBins.append(len(solution))
 
-        resultList[type(algorithm).__name__] = averageBins
+        resultList[className(algorithm)] = averageBins
 
-    print("Analysis of Average Bins")
     analyzeOutput(resultList)
+    
+    return resultList
 
 
 if __name__ == "__main__":
