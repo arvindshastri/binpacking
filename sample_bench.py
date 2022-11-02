@@ -4,11 +4,10 @@ import pyperf
 from os import listdir
 from os.path import isfile, join, basename
 from macpacking.reader import DatasetReader, BinppReader, JburkardtReader
-from macpacking.model import Online
 from macpacking.algorithms.online import \
     FirstFit, BestFit, WorstFit
 from macpacking.algorithms.offline import \
-    FirstFitDecreasing, BestFitDecreasing, WorstFitDecreasing, BenMaier
+    FirstFitDecreasing, BestFitDecreasing, WorstFitDecreasing
 
 
 '''Credit: https://stackoverflow.com/questions/1796180/how-can-i-get-a-list-of-all-classes-within-current-module-in-python'''  # noqa: E501
@@ -16,7 +15,7 @@ onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpackin
 
 
 def main():
-    
+
     # binppCases = [
     #     './_datasets/binpp/N1C1W1/N1C1W1_A.BPP.txt',
     #     './_datasets/binpp/N1C3W4/N1C3W4_A.BPP.txt',
@@ -42,23 +41,23 @@ def main():
 
     ######
 
-    CASES = './_datasets/binpp/N4C3W4'
+    CASES = './_datasets/binpp/N1C1W1'
     cases = list_case_files(CASES)
-    
+
     print("Analysis of Average Bin Usage as Percentage")
-    print("─" * 25)
-    analyzePercentage(cases, BinppReader, algorithms)
+    print("─" * 43)
+    binUsage(cases, BinppReader, algorithms)
 
     print("Analysis of Average Remaining Space")
-    print("─" * 25)
-    spaceBench(cases, BinppReader, algorithms)
+    print("─" * 35)
+    remainingSpace(cases, BinppReader, algorithms)
 
     print("Analysis of Average Bins")
-    print("─" * 25)
+    print("─" * 24)
     numberBins(cases, BinppReader, algorithms)
 
     print("Analysis of Average Comparisons")
-    print("─" * 25)
+    print("─" * 31)
     numberComparisons(cases, BinppReader, algorithms)
 
 
@@ -86,7 +85,7 @@ def analyzeOutput(dict):
 def readOnline(cases, reader, algorithm):
     solutionList = []
     capacity = 0
-    comparisons = 0
+    comparisons = []
 
     for case in cases:
         lastLetter = case.replace(".txt", "")[-1]
@@ -95,7 +94,7 @@ def readOnline(cases, reader, algorithm):
         data = reader(case).online()
         capacity = data[0]
         solution = algorithm(data)
-        comparisons = algorithm.comparisons
+        comparisons.append(algorithm.comparisons)
         solutionList.append(solution)
 
     return (solutionList, capacity, comparisons)
@@ -104,7 +103,7 @@ def readOnline(cases, reader, algorithm):
 def readOffline(cases, reader, algorithm):
     solutionList = []
     capacity = 0
-    comparisons = 0
+    comparisons = []
 
     for case in cases:
         lastLetter = case.replace(".txt", "")[-1]
@@ -113,7 +112,7 @@ def readOffline(cases, reader, algorithm):
         data = reader(case).offline()
         capacity = data[0]
         solution = algorithm(data)
-        comparisons = algorithm.comparisons
+        comparisons.append(algorithm.comparisons)
         solutionList.append(solution)
 
     return (solutionList, capacity, comparisons)
@@ -134,12 +133,12 @@ def execTime(cases: list[str], reader: DatasetReader, algorithms: list, runner):
                 data = reader(case).online()
             else:
                 data = reader(case).offline()
-                
+
             runner.bench_func(name, algorithm, data)
 
 
 # ANALYZE AVERAGE PERCENTAGE USAGE
-def analyzePercentage(cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
+def binUsage(cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
 
     resultList = {}
 
@@ -151,7 +150,7 @@ def analyzePercentage(cases: list[str], reader: DatasetReader, algorithms: list)
             data = readOnline(cases, reader, algorithm)
         else:
             data = readOffline(cases, reader, algorithm)
-        
+
         solutionList = data[0]
         capacity = data[1]
 
@@ -173,7 +172,7 @@ def analyzePercentage(cases: list[str], reader: DatasetReader, algorithms: list)
 
 
 # ANALYZE AVERAGE REMAINING SPACE
-def spaceBench(cases: list[str], reader: DatasetReader, algorithms: list):
+def remainingSpace(cases: list[str], reader: DatasetReader, algorithms: list):
 
     resultList = {}
 
@@ -220,7 +219,6 @@ def numberBins(cases: list[str], reader: DatasetReader, algorithms: list):
             data = readOffline(cases, reader, algorithm)
 
         solutionList = data[0]
-        capacity = data[1]
 
         for solution in solutionList:
             averageBins.append(len(solution))
@@ -233,20 +231,25 @@ def numberBins(cases: list[str], reader: DatasetReader, algorithms: list):
 
 
 # ANALYZE AVERAGE NUMBER OF BIN COMPARISONS
-def numberComparisons(cases: list[str], reader: DatasetReader, algorithms: list):
+def numberComparisons(cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
 
     resultList = {}
 
     for algorithm in algorithms:
+
+        averageComparison = []
 
         if algorithm in onlineClasses:
             data = readOnline(cases, reader, algorithm)
         else:
             data = readOffline(cases, reader, algorithm)
 
-        comparisons = [data[2]]
-            
-        resultList[className(algorithm)] = comparisons
+        comparisons = data[2]
+
+        for comparison in comparisons:
+            averageComparison.append(comparison)
+
+        resultList[className(algorithm)] = averageComparison
 
     analyzeOutput(resultList)
 

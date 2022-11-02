@@ -1,14 +1,13 @@
 import csv
-import sys 
+import sys
 import inspect
 from os.path import basename
-from macpacking.reader import DatasetReader, BinppReader, JburkardtReader
-from macpacking.model import Online, Offline
+from macpacking.reader import DatasetReader, BinppReader, JburkardtReader  # noqa: F401, E501
 from macpacking.algorithms.online import \
     FirstFit, BestFit, WorstFit
 from macpacking.algorithms.offline import \
     FirstFitDecreasing, BestFitDecreasing, WorstFitDecreasing, BenMaier
-from sample_bench import list_case_files, readOnline, readOffline, numberBins, analyzeOutput, className
+from sample_bench import list_case_files, className
 
 binppCSV = './_datasets/binpp.csv'
 binppHardCSV = './_datasets/binpp-hard.csv'
@@ -19,11 +18,11 @@ binppHardDict = {}
 jburkardtDict = {}
 
 
-def readCSV(dataFile, dictionary):
+def readCSV(dataFile, dictionary: dict):
     csv_reader = csv.reader(dataFile)
-    next(csv_reader)   
+    next(csv_reader)
     for row in csv_reader:
-        dictionary[row[0]] = int(row[1])  
+        dictionary[row[0]] = int(row[1])
 
 
 with open(binppCSV, 'r') as binppFile:
@@ -37,11 +36,11 @@ with open(jburkardtCSV, 'r') as jburkardtFile:
 onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpacking.algorithms.online'], inspect.isclass) if obj.__module__ == 'macpacking.algorithms.online']  # noqa: E501
 
 
-def readcases(cases, reader, algorithm):
+def readcases(cases: list[str], reader: DatasetReader, algorithm: list):
     solutionDict = {}
 
     for case in cases:
-            
+
         name = basename(case).replace(".BPP.txt", "")
         lastLetter = case.replace(".txt", "")[-1]
         if reader == JburkardtReader:
@@ -51,7 +50,7 @@ def readcases(cases, reader, algorithm):
                 separator = "_"
                 stripped = basename(case).split(separator, 1)[0]
                 name = stripped[:1] + separator + stripped[1:]
-        
+
         if algorithm in onlineClasses:
             data = reader(case).online()
         else:
@@ -59,12 +58,12 @@ def readcases(cases, reader, algorithm):
 
         solution = algorithm(data)
         solutionDict[name] = len(solution)
-    
+
     return solutionDict
 
 
-def binNumber(cases, reader, algorithm, dictionary, print=True):
-    
+def binNumber(cases: list[str], reader: DatasetReader, algorithm: list, dictionary: dict, print=True):  # noqa: E501
+
     solutionDict = readcases(cases, reader, algorithm)
     outputList = []
 
@@ -72,13 +71,14 @@ def binNumber(cases, reader, algorithm, dictionary, print=True):
         if print:
             difference = solutionDict[key] - dictionary[key]
             if difference == 0:
-                print(f"{key} using {className(algorithm)}: Optimal solution found.")
+                print(f"{key} using {className(algorithm)}: Optimal solution found.")  # noqa: E501
             elif difference > 0:
-                print(f"{key} using {className(algorithm)}: Optimal solution is {difference} bins smaller.")
-        
+                print(f"{key} using {className(algorithm)}: Optimal solution is {difference} bins smaller.")  # noqa: E501
+
         outputList.append(solutionDict[key])
-    
+
     return outputList
+
 
 def main():
 
@@ -95,6 +95,7 @@ def main():
         plotList.append(binNumber(cases, reader, algorithm, dictionary, print))
 
     print(plotList)
+
 
 if __name__ == "__main__":
     main()

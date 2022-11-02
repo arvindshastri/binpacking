@@ -54,22 +54,22 @@ class JburkardtReader(DatasetReader):
             raise ValueError(f'Unknown file [{filename}]')
         self.__filename = filename
 
-    def _load_data_from_disk(self) -> WeightSet:        
+    def _load_data_from_disk(self) -> WeightSet:
         filenameLocation = self.__filename
-        
+
         with open(filenameLocation, 'r') as readerC:
             capacity: int = int(readerC.readline())
-        
+
         filenameLocation = filenameLocation.replace("_c", "_s")
 
         with open(filenameLocation, 'r') as readerS:
             numberOfObjects = \
-                [int(l) for l in (line.strip() for line in readerS) if l]
-            nb_objects: int = int(len(numberOfObjects))
-        
+                [int(l) for l in (line.strip() for line in readerS) if l]  # noqa: E741, E501
+            nb_objects: int = int(len(numberOfObjects))  # noqa: F841
+
         filenameLocation = filenameLocation.replace("_s", "_w")
 
         with open(filenameLocation, 'r') as readerW:
-            weights = [int(l) for l in (line.strip() for line in readerW) if l]
+            weights = [int(l) for l in (line.strip() for line in readerW) if l]  # noqa: E741, E501
 
-        return (capacity, weights)     
+        return (capacity, weights)

@@ -78,11 +78,11 @@ class Terrible(Online):
         bin_index = 0
         solution = []
         self.comparisons = 0
-        
+
         for w in stream:
             solution.append([w])
             bin_index += 1
-        
+
         return solution
 
 

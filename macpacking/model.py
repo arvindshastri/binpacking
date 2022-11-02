@@ -21,8 +21,9 @@ class Online(BinPacker):
 class Offline(BinPacker):
 
     def __call__(self, ws: WeightSet):
-        # take 0 and 1 index elements of ws[] and place them in capacity, weights
-        capacity, weights = ws  
+        # take 0 and 1 index elements of ws[]
+        # and place them in capacity, weights
+        capacity, weights = ws
         return self._process(capacity, weights)
 
     @abstractmethod
