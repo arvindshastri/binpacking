@@ -57,7 +57,7 @@ class JburkardtReader(DatasetReader):
     def _load_data_from_disk(self) -> WeightSet:        
         filenameLocation = self.__filename
         
-        with open(self.__filename, 'r') as readerC:
+        with open(filenameLocation, 'r') as readerC:
             capacity: int = int(readerC.readline())
         
         filenameLocation = filenameLocation.replace("_c", "_s")
