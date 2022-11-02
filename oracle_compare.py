@@ -7,7 +7,7 @@ from macpacking.algorithms.online import \
     FirstFit, BestFit, WorstFit
 from macpacking.algorithms.offline import \
     FirstFitDecreasing, BestFitDecreasing, WorstFitDecreasing, BenMaier
-from sample_bench import list_case_files, className
+from helpers import list_case_files, className
 
 binppCSV = './_datasets/binpp.csv'
 binppHardCSV = './_datasets/binpp-hard.csv'
@@ -16,6 +16,8 @@ jburkardtCSV = './_datasets/jburkardt.csv'
 binppDict = {}
 binppHardDict = {}
 jburkardtDict = {}
+
+onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpacking.algorithms.online'], inspect.isclass) if obj.__module__ == 'macpacking.algorithms.online']  # noqa: E501
 
 
 def readCSV(dataFile, dictionary: dict):
@@ -31,9 +33,6 @@ with open(binppHardCSV, 'r') as binppHardFile:
     readCSV(binppHardFile, binppHardDict)
 with open(jburkardtCSV, 'r') as jburkardtFile:
     readCSV(jburkardtFile, jburkardtDict)
-
-
-onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpacking.algorithms.online'], inspect.isclass) if obj.__module__ == 'macpacking.algorithms.online']  # noqa: E501
 
 
 def readcases(cases: list[str], reader: DatasetReader, algorithm: list):
