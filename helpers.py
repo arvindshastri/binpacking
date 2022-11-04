@@ -1,13 +1,13 @@
 from os import listdir
-from os.path import isfile, join
-from macpacking.reader import JburkardtReader
+from os.path import isfile, join, basename
+from macpacking.reader import DatasetReader, JburkardtReader
 
 # HELPER FUNCTIONS
 def list_case_files(dir: str) -> list[str]:
     return sorted([f'{dir}/{f}' for f in listdir(dir) if isfile(join(dir, f))])
 
 
-def average(list, decimal) -> int:
+def average(list: list[int], decimal: int) -> int:
     return round((sum(list) / len(list)), decimal)
 
 
@@ -15,7 +15,7 @@ def className(algorithm) -> str:
     return type(algorithm).__name__
 
 
-def analyzeOutput(dict):
+def analyzeOutput(dict: dict) -> None:
     for key in dict:
         avg = average(dict[key], 4)
         line = '{:<20} {:<10}'.format(key+":", avg)
@@ -23,7 +23,7 @@ def analyzeOutput(dict):
     print("\n")
 
 
-def readOnline(cases, reader, algorithm):
+def readOnline(cases: list[str], reader: DatasetReader, algorithm):
     solutionList = []
     capacity = 0
     comparisons = []
@@ -41,7 +41,7 @@ def readOnline(cases, reader, algorithm):
     return (solutionList, capacity, comparisons)
 
 
-def readOffline(cases, reader, algorithm):
+def readOffline(cases: list[str], reader: DatasetReader, algorithm):
     solutionList = []
     capacity = 0
     comparisons = []
@@ -57,3 +57,31 @@ def readOffline(cases, reader, algorithm):
         solutionList.append(solution)
 
     return (solutionList, capacity, comparisons)
+
+
+def getCaseName(case: list[str], reader: DatasetReader) -> str:
+    name = basename(case).replace(".BPP.txt", "")
+    lastLetter = case.replace(".txt", "")[-1]
+    if reader == JburkardtReader:
+        if lastLetter == 'c':
+            separator = "_"
+            stripped = basename(case).split(separator, 1)[0]
+            name = stripped[:1] + separator + stripped[1:]
+        else:
+            name = None
+
+    return name
+
+def getListCaseNames(cases: list[str], reader: DatasetReader) -> list[str]:
+    
+    listCaseNames = []
+
+    for case in cases:
+        if reader == JburkardtReader and case == './_datasets/jburkardt/_source.txt':
+            continue
+        else:
+            name = getCaseName(case, reader)
+            if name != None:
+                listCaseNames.append(name) 
+
+    return listCaseNames
