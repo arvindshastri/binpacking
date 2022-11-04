@@ -24,3 +24,38 @@ class Plotter():
         plt.show()
 
         return
+
+    def oraclePlot2(self, plotList, caseNameList):
+
+        length = 0
+        width = 0.2
+        shiftList = []
+        values = list(range(len(plotList)))
+
+        tempList = [list(i) for i in zip(*list(plotList.values()))]
+        length = len(tempList)
+        
+        for i in range(1, (length // 2) + 1):
+            x = width/2
+            var = i*x
+            shiftList.append(var)
+            shiftList.append(var*(-1))
+
+        if length % 2 != 0:
+            shiftList.append(0)
+
+        shiftList.sort()
+
+        for count, key in enumerate(tempList):
+            temp = shiftList[count]
+            new_list = [x + temp for x in values]
+            plt.bar(new_list, tempList[count], width=width)
+
+        algorithms = list(plotList.keys())
+
+        plt.xticks(values, algorithms, rotation = 45)
+        plt.xlabel('Algorithms')
+        plt.ylabel('Number of Bins in Optimal Solution')
+        plt.legend(caseNameList, loc="lower left", bbox_to_anchor=(1, 0.5))
+
+        plt.show()
