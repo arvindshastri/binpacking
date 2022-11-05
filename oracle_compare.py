@@ -42,6 +42,12 @@ class OracleReader():
 
         plotList = {}
 
+        oracleValueList = []
+        oracleSolnList = self.readcases(cases, reader, algorithms[0])
+        for case in oracleSolnList:
+            oracleValueList.append(dictionary[case])
+        plotList["Optimal"] = oracleValueList
+
         for algorithm in algorithms:
 
             solutionDict = self.readcases(cases, reader, algorithm)
@@ -60,11 +66,5 @@ class OracleReader():
                 outputList.append(solutionDict[case])
 
             plotList[name] = outputList
-
-        oracleValueList = []
-        for case in solutionDict:
-            oracleValueList.append(dictionary[case])
-
-        plotList["Optimal"] = oracleValueList
 
         return plotList

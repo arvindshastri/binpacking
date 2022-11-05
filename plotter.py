@@ -71,11 +71,16 @@ class Plotter():
         shiftList.sort()
 
         for count, key in enumerate(plotList):
-            temp = shiftList[count]
-            new_list = [x + temp for x in values]
-            plt.bar(new_list, plotList[key], width=width)
+            if count == 0:
+                temp = shiftList[count]
+                new_list = [x + temp for x in values]
+                plt.bar(new_list, plotList[key], width=width, color='black')
+            else:
+                temp = shiftList[count]
+                new_list = [x + temp for x in values]
+                plt.bar(new_list, plotList[key], width=width)
 
-        plt.xticks(values, caseNameList, rotation=45)
+        plt.xticks(values, caseNameList)
         plt.xlabel('Cases from Dataset')
         plt.ylabel('Number of Bins in Optimal Solution')
         plt.title('Output of Algorithms Compared to Optimal for Each Case')
