@@ -6,14 +6,14 @@ from macpacking.reader import DatasetReader, JburkardtReader
 from helpers import analyzeOutput, average, className, readOffline, readOnline
 
 
-'''Credit: https://stackoverflow.com/questions/1796180/how-can-i-get-a-list-of-all-classes-within-current-module-in-python'''  # noqa: E501
-onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpacking.algorithms.online'], inspect.isclass) if obj.__module__ == 'macpacking.algorithms.online']  # noqa: E501
-
-
 class Benchmark():
 
+    def __init__(self):
+        '''Credit: https://stackoverflow.com/questions/1796180/how-can-i-get-a-list-of-all-classes-within-current-module-in-python'''  # noqa: E501
+        self.onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpacking.algorithms.online'], inspect.isclass) if obj.__module__ == 'macpacking.algorithms.online']  # noqa: E501
+
     # RUNTIME BENCHMARK
-    def execTime(cases: list[str], reader: DatasetReader, algorithms: list, runner):  # noqa: E501
+    def execTime(self, cases: list[str], reader: DatasetReader, algorithms: list, runner):  # noqa: E501
 
         for algorithm in algorithms:
             for case in cases:
@@ -23,13 +23,12 @@ class Benchmark():
 
                 name = basename(case)
 
-                if algorithm in onlineClasses:
+                if algorithm in self.onlineClasses:
                     data = reader(case).online()
                 else:
                     data = reader(case).offline()
 
                 runner.bench_func(name, algorithm, data)
-
 
     # ANALYZE AVERAGE PERCENTAGE USAGE
     def binUsage(self, cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
@@ -40,7 +39,7 @@ class Benchmark():
             averageUsage = []
             capacity = 0
 
-            if algorithm in onlineClasses:
+            if algorithm in self.onlineClasses:
                 data = readOnline(cases, reader, algorithm)
             else:
                 data = readOffline(cases, reader, algorithm)
@@ -61,11 +60,9 @@ class Benchmark():
             resultList[className(algorithm)] = averageUsage
 
         analyzeOutput(resultList)
-        # return resultList
-
 
     # ANALYZE AVERAGE REMAINING SPACE
-    def remainingSpace(self, cases: list[str], reader: DatasetReader, algorithms: list):
+    def remainingSpace(self, cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
 
         resultList = {}
 
@@ -73,7 +70,7 @@ class Benchmark():
             averageRemainingSpace = []
             capacity = 0
 
-            if algorithm in onlineClasses:
+            if algorithm in self.onlineClasses:
                 data = readOnline(cases, reader, algorithm)
             else:
                 data = readOffline(cases, reader, algorithm)
@@ -97,16 +94,15 @@ class Benchmark():
 
         # return resultList
 
-
     # ANALYZE AVERAGE NUMBER OF BINS
-    def numberBins(self, cases: list[str], reader: DatasetReader, algorithms: list):
+    def numberBins(self, cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
 
         resultList = {}
 
         for algorithm in algorithms:
             averageBins = []
 
-            if algorithm in onlineClasses:
+            if algorithm in self.onlineClasses:
                 data = readOnline(cases, reader, algorithm)
             else:
                 data = readOffline(cases, reader, algorithm)
@@ -120,9 +116,6 @@ class Benchmark():
 
         analyzeOutput(resultList)
 
-        # return resultList
-
-
     # ANALYZE AVERAGE NUMBER OF BIN COMPARISONS
     def numberComparisons(self, cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
 
@@ -132,7 +125,7 @@ class Benchmark():
 
             averageComparison = []
 
-            if algorithm in onlineClasses:
+            if algorithm in self.onlineClasses:
                 data = readOnline(cases, reader, algorithm)
             else:
                 data = readOffline(cases, reader, algorithm)
@@ -145,5 +138,3 @@ class Benchmark():
             resultList[className(algorithm)] = averageComparison
 
         analyzeOutput(resultList)
-
-        # return resultList

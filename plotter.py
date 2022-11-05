@@ -1,42 +1,27 @@
 import matplotlib.pyplot as plt
-from helpers import getCaseName
+
 
 class Plotter():
 
     def oraclePlot(self, plotList, caseNameList):
 
-        # plotlist = {key: [value1, value2, value3], key2: [value1, value2, value3]}
+        plt.figure(figsize=(20, 5))
 
-        fig, ax = plt.subplots() 
-
-        for algorithm, output in plotList.items():
-            ax.plot(caseNameList, output, label = algorithm)
-
-        ax.set_title('Algorithm Output of Number of Bins for Each Dataset Case')
-        ax.set_xlabel('Dataset Cases')
-        ax.set_ylabel('Number of Bins in Optimal Solution')
-        plt.xticks(rotation = 50)
-
-        pos = ax.get_position()
-        ax.set_position([pos.x0, pos.y0, pos.width * 0.9, pos.height])
-        ax.legend(loc='center right', bbox_to_anchor=(1.5, 1))
-
-        plt.show()
-
-        return
-
-    def oraclePlot2(self, plotList, caseNameList):
-
-        length = 0
-        width = 0.2
+        width = 0.05
         shiftList = []
         values = list(range(len(plotList)))
+        minimum = float('infinity')
+        algorithms = list(plotList.keys())
 
         tempList = [list(i) for i in zip(*list(plotList.values()))]
         length = len(tempList)
-        
+
+        for i in tempList:
+            if min(i) < minimum:
+                minimum = min(i)
+
         for i in range(1, (length // 2) + 1):
-            x = width/2
+            x = 0.05
             var = i*x
             shiftList.append(var)
             shiftList.append(var*(-1))
@@ -46,16 +31,55 @@ class Plotter():
 
         shiftList.sort()
 
-        for count, key in enumerate(tempList):
+        for count in range(len(tempList)):
             temp = shiftList[count]
             new_list = [x + temp for x in values]
             plt.bar(new_list, tempList[count], width=width)
 
-        algorithms = list(plotList.keys())
-
-        plt.xticks(values, algorithms, rotation = 45)
+        plt.xticks(values, algorithms, rotation=45)
         plt.xlabel('Algorithms')
         plt.ylabel('Number of Bins in Optimal Solution')
+        plt.ylim(bottom=minimum - 2)
         plt.legend(caseNameList, loc="lower left", bbox_to_anchor=(1, 0.5))
+
+        plt.show()
+
+    def oraclePlot2(self, plotList, caseNameList):
+
+        plt.figure(figsize=(15, 5))
+
+        width = 0.1
+        shiftList = []
+        values = list(range(len(caseNameList)))
+        minimum = float('infinity')
+        algorithms = list(plotList.keys())
+
+        for algorithm in plotList:
+            minValue = min(plotList[algorithm])
+            if minValue < minimum:
+                minimum = minValue
+
+        for i in range(1, (len(plotList) // 2) + 1):
+            x = 0.1
+            var = i*x
+            shiftList.append(var)
+            shiftList.append(var*(-1))
+
+        if len(plotList) % 2 != 0:
+            shiftList.append(0)
+
+        shiftList.sort()
+
+        for count, key in enumerate(plotList):
+            temp = shiftList[count]
+            new_list = [x + temp for x in values]
+            plt.bar(new_list, plotList[key], width=width)
+
+        plt.xticks(values, caseNameList, rotation=45)
+        plt.xlabel('Cases from Dataset')
+        plt.ylabel('Number of Bins in Optimal Solution')
+        plt.title('Output of Algorithms Compared to Optimal for Each Case')
+        plt.ylim(bottom=minimum - 2)
+        plt.legend(algorithms, loc="lower left", bbox_to_anchor=(1, 0.60))
 
         plt.show()
