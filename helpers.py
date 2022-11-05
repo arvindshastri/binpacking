@@ -2,6 +2,7 @@ from os import listdir
 from os.path import isfile, join, basename
 from macpacking.reader import DatasetReader, JburkardtReader
 
+
 # HELPER FUNCTIONS
 def list_case_files(dir: str) -> list[str]:
     return sorted([f'{dir}/{f}' for f in listdir(dir) if isfile(join(dir, f))])
@@ -72,16 +73,27 @@ def getCaseName(case: list[str], reader: DatasetReader) -> str:
 
     return name
 
+
 def getListCaseNames(cases: list[str], reader: DatasetReader) -> list[str]:
-    
+
     listCaseNames = []
 
     for case in cases:
-        if reader == JburkardtReader and case == './_datasets/jburkardt/_source.txt':
+        if reader == JburkardtReader and case == './_datasets/jburkardt/_source.txt':  # noqa: E501
             continue
         else:
             name = getCaseName(case, reader)
-            if name != None:
-                listCaseNames.append(name) 
+            if name is not None:
+                listCaseNames.append(name)
 
     return listCaseNames
+
+
+def getListBasenames(listOfCases: list[str]):
+
+    output = []
+
+    for case in listOfCases:
+        output.append(basename(case))
+
+    return output

@@ -1,6 +1,5 @@
 import sys
 import inspect
-import pyperf
 from os.path import basename
 from macpacking.reader import DatasetReader, JburkardtReader
 from helpers import analyzeOutput, average, className, readOffline, readOnline
@@ -21,7 +20,8 @@ class Benchmark():
                 if reader == JburkardtReader and lastLetter != 'c':
                     continue
 
-                name = basename(case)
+                algorithmName = className(algorithm)
+                name = f"{algorithmName}: {basename(case)}"
 
                 if algorithm in self.onlineClasses:
                     data = reader(case).online()
@@ -62,7 +62,7 @@ class Benchmark():
         analyzeOutput(resultList)
 
     # ANALYZE AVERAGE REMAINING SPACE
-    def remainingSpace(self, cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501
+    def remainingSpace(self, cases: list[str], reader: DatasetReader, algorithms: list):  # noqa: E501  
 
         resultList = {}
 
