@@ -132,6 +132,7 @@ class RefinedFirstFit(Online):
             size = w/capacity
             seen += 1
 
+
             #A piece
             if size > (1/2): selectedBin = class1_bins
             #B1 piece

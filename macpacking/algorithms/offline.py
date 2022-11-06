@@ -8,7 +8,18 @@ import binpacking as bp
 class BenMaier(Offline):
 
     def _process(self, capacity: int, weights: list[int]) -> Solution:
+        self.comparisons = 0
         return bp.to_constant_volume(weights, capacity)
+
+
+class FixedNumBins(Offline):
+
+    def __init__(self, numBins):
+        self.numBins = numBins
+        self.comparisons = 0
+
+    def _process(self, capacity: int, weights: list[int]) -> Solution:
+        return bp.to_constant_bin_number(weights, self.numBins)
 
 
 class BestFitDecreasing(Offline):
