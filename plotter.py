@@ -84,7 +84,7 @@ class Plotter():
         plt.xlabel('Cases from Dataset')
         plt.ylabel('Number of Bins in Optimal Solution')
         plt.title('Output of Algorithms Compared to Optimal for Each Case')
-        plt.ylim(bottom=minimum - 2)
+        plt.ylim(bottom=minimum - minimum*0.1)
         plt.legend(algorithms, loc="lower left", bbox_to_anchor=(1, 0.60))
 
         plt.show()

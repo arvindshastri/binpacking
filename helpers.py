@@ -89,7 +89,7 @@ def getListCaseNames(cases: list[str], reader: DatasetReader) -> list[str]:
     return listCaseNames
 
 
-def getListBasenames(listOfCases: list[str]):
+def getListBasenames(listOfCases: list[str]) -> list[str]:
 
     output = []
 

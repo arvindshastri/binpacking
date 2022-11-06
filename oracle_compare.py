@@ -10,6 +10,20 @@ class OracleReader():
     def __init__(self):
         self.onlineClasses = [name for name, obj in inspect.getmembers(sys.modules['macpacking.algorithms.online'], inspect.isclass) if obj.__module__ == 'macpacking.algorithms.online']  # noqa: E501
 
+    def oracleDictionaries(self, binppCSV, binppHardCSV, jburkardtCSV):
+        binppDict = {}
+        binppHardDict = {}
+        jburkardtDict = {}
+
+        with open(binppCSV, 'r') as binppFile:
+            self.readCSV(binppFile, binppDict)
+        with open(binppHardCSV, 'r') as binppHardFile:
+            self.readCSV(binppHardFile, binppHardDict)
+        with open(jburkardtCSV, 'r') as jburkardtFile:
+            self.readCSV(jburkardtFile, jburkardtDict)
+        
+        return (binppDict, binppHardDict, jburkardtDict)
+
     def readCSV(self, dataFile, dictionary: dict):
         csv_reader = csv.reader(dataFile)
         next(csv_reader)

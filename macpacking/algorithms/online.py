@@ -110,3 +110,52 @@ class WorstFit(Online):
                 solution[worst_index].append(w)
 
         return solution
+
+
+class RefinedFirstFit(Online):
+
+    def _process(self, capacity: int, stream: WeightStream) -> Solution:
+
+        self.comparisons = 0
+        fixedIntegers = [6, 7, 8, 9]
+        class1_bins = []
+        class2_bins = []
+        class3_bins = []
+        class4_bins = []
+        solution = []
+        seen = 0
+
+        for w in stream:
+
+            selectedBin = []
+            bin_index = 0
+            size = w/capacity
+            seen += 1
+
+            #A piece
+            if size > (1/2): selectedBin = class1_bins
+            #B1 piece
+            elif size > (2/5) and size <= (1/2): selectedBin = class2_bins
+            #B2 piece
+            elif size > (1/3) and size <= (2/5):
+                if any(seen % m == 0 for m in fixedIntegers):
+                    selectedBin = class1_bins
+                else:
+                    selectedBin = class3_bins
+            #X piece
+            else: selectedBin = class4_bins
+
+
+            while (bin_index < len(selectedBin)):
+                self.comparisons += 1
+                if (capacity - sum(selectedBin[bin_index]) >= w):
+                    selectedBin[bin_index].append(w)
+                    break
+                bin_index += 1
+
+            if bin_index == len(selectedBin):
+                selectedBin.append([w])
+
+        solution = class1_bins + class2_bins + class3_bins + class4_bins
+
+        return solution
