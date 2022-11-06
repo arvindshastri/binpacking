@@ -48,6 +48,7 @@ class BinppReader(DatasetReader):
 
 
 class JburkardtReader(DatasetReader):
+    '''Read problem description according to the Jburkardt format'''
 
     def __init__(self, filename: str) -> None:
         if not path.exists(filename):
@@ -57,6 +58,8 @@ class JburkardtReader(DatasetReader):
     def _load_data_from_disk(self) -> WeightSet:
         filenameLocation = self.__filename
 
+        # assume filename extension is _c
+        # assume remaining files are located in same directory
         with open(filenameLocation, 'r') as readerC:
             capacity: int = int(readerC.readline())
 
@@ -70,6 +73,7 @@ class JburkardtReader(DatasetReader):
         filenameLocation = filenameLocation.replace("_s", "_w")
 
         with open(filenameLocation, 'r') as readerW:
-            weights = [int(l) for l in (line.strip() for line in readerW) if l]  # noqa: E741, E501
+            weights = \
+                [int(l) for l in (line.strip() for line in readerW) if l]  # noqa: E741, E501
 
         return (capacity, weights)

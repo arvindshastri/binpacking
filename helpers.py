@@ -13,27 +13,28 @@ def average(list: list[int], decimal: int) -> int:
 
 
 def className(algorithm) -> str:
-    return type(algorithm).__name__
+    return type(algorithm).__name__  # returns name as defined in declaration
 
 
-def analyzeOutput(dict: dict) -> None:
+def printOutput(dict: dict) -> None:
     for key in dict:
-        avg = average(dict[key], 4)
-        line = '{:<20} {:<10}'.format(key+":", avg)
+        line = '{:<20} {:<10}'.format(key+":", dict[key])  # formatting
         print(line)
     print("\n")
 
 
-def readOnline(cases: list[str], reader: DatasetReader, algorithm):
+def readOnline(cases: list[str], reader: DatasetReader, algorithm) -> list:
+
+    # uses online method to read data
+
     solutionList = []
-    capacity = 0
     comparisons = []
 
     for case in cases:
         lastLetter = case.replace(".txt", "")[-1]
         if reader == JburkardtReader and lastLetter != 'c':
             continue
-        data = reader(case).online()
+        data = reader(case).online()  # online method
         capacity = data[0]
         solution = algorithm(data)
         comparisons.append(algorithm.comparisons)
@@ -42,9 +43,31 @@ def readOnline(cases: list[str], reader: DatasetReader, algorithm):
     return (solutionList, capacity, comparisons)
 
 
-def readOffline(cases: list[str], reader: DatasetReader, algorithm):
+def readOffline(cases: list[str], reader: DatasetReader, algorithm) -> list:
+
+    # uses offline method to read data
+
     solutionList = []
-    capacity = 0
+    comparisons = []
+
+    for case in cases:
+        lastLetter = case.replace(".txt", "")[-1]
+        if reader == JburkardtReader and lastLetter != 'c':
+            continue
+        data = reader(case).offline()  # offline method
+        capacity = data[0]
+        solution = algorithm(data)
+        comparisons.append(algorithm.comparisons)
+        solutionList.append(solution)
+
+    return (solutionList, capacity, comparisons)
+
+
+def readFixedBins(cases: list[str], reader: DatasetReader, algorithm) -> list:
+
+    #  uses offline method to read data
+
+    solutionList = []
     comparisons = []
 
     for case in cases:
@@ -53,7 +76,9 @@ def readOffline(cases: list[str], reader: DatasetReader, algorithm):
             continue
         data = reader(case).offline()
         capacity = data[0]
-        solution = algorithm(data)
+        weights = data[1]
+        numBins = algorithm.numBins
+        solution = algorithm((numBins, weights))  # numBins, weights as arg
         comparisons.append(algorithm.comparisons)
         solutionList.append(solution)
 
@@ -61,6 +86,9 @@ def readOffline(cases: list[str], reader: DatasetReader, algorithm):
 
 
 def getCaseName(case: list[str], reader: DatasetReader) -> str:
+
+    # business logic for retrieving casenames
+
     name = basename(case).replace(".BPP.txt", "")
     lastLetter = case.replace(".txt", "")[-1]
     if reader == JburkardtReader:
@@ -76,6 +104,8 @@ def getCaseName(case: list[str], reader: DatasetReader) -> str:
 
 def getListCaseNames(cases: list[str], reader: DatasetReader) -> list[str]:
 
+    #  business logic for retrieving list of case names using getCaseName()
+
     listCaseNames = []
 
     for case in cases:
@@ -90,6 +120,8 @@ def getListCaseNames(cases: list[str], reader: DatasetReader) -> list[str]:
 
 
 def getListBasenames(listOfCases: list[str]) -> list[str]:
+
+    #  returns list of basenames
 
     output = []
 
