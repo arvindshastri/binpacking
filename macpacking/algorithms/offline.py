@@ -29,24 +29,24 @@ class MultiFit(Offline):
         self.comparisons = 0
 
     def _process(self, capacity: int, weights: list[int]) -> Solution:
-        
+
         L = max((sum(weights) / self.numBins), max(weights))    # lower bound
         U = max(2*(sum(weights) / self.numBins), max(weights))  # upper bound
-        k = 10  #iterations
+        k = 10   # iterations
 
         for _ in range(k):
             C = (L+U)/2  # set capacity
             delegation = FirstFitDecreasing()
             FFDoutput = delegation((C, weights))  # delegate to FFD
-            self.comparisons += delegation.comparisons  # increase comparisons 
+            self.comparisons += delegation.comparisons  # increase comparisons
 
             if len(FFDoutput) <= self.numBins:
                 U = C  # if FFD needs at most numBins
             else:
                 L = C  # if FFD needs more than numBins
-        
-        delegation = FirstFitDecreasing() 
-        output = delegation((U, weights))  # output guaranteed to use at most numBins
+
+        delegation = FirstFitDecreasing()
+        output = delegation((U, weights))  # output guaranteed to use at most numBins  # noqa: E501
         self.comparisons += delegation.comparisons
         return output
 
